@@ -61,8 +61,12 @@ public class TopicosController {
     @PutMapping("/{id}")
     @Transactional
     public ResponseEntity<TopicoDto> atualizar(@PathVariable Long id, @RequestBody @Valid AtualizacaoTopicoRequest request){
-        Topico topico = request.atualizar(id, topicoRepository);
-        return ResponseEntity.ok(new TopicoDto(topico));
+        Optional<Topico> optional = topicoRepository.findById(id);
+            if(optional.isPresent()){
+                Topico topico = request.atualizar(id, topicoRepository);
+                return ResponseEntity.ok(new TopicoDto(topico));
+            }
+        return ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/{id}")
