@@ -16,6 +16,7 @@ import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/topicos")
@@ -49,9 +50,12 @@ public class TopicosController {
     }
 
     @GetMapping("/{id}")
-    public DetalhesDoTopicoDto detalhar(@PathVariable Long id){
-        Topico topico = topicoRepository.getOne(id);
-        return new DetalhesDoTopicoDto(topico);
+    public ResponseEntity<DetalhesDoTopicoDto> detalhar(@PathVariable Long id){
+        Optional<Topico> topico = topicoRepository.findById(id);
+        if(topico.isPresent()){
+            return ResponseEntity.ok(new DetalhesDoTopicoDto(topico.get()));
+        }
+        return ResponseEntity.notFound().build();
     }
 
     @PutMapping("/{id}")
